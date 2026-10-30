@@ -1,0 +1,14 @@
+# Ambiente virtual e caches
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Logs e arquivos locais
+*.log
+.env
+.DS_Store
+
+# Backups gerados pelo backup.sh
+soleria-backup-*.tar*
+soleria-backup-*.sha256

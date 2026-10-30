@@ -11,6 +11,8 @@ conversa.
 main.py
 config.py
 personality.py          # fachada de compatibilidade para soleria.persona
+instalar.sh             # instalação automática em um PC novo
+backup.sh               # backup de código, dados e modelos antes de formatar
 soleria/
   __main__.py           # permite `python -m soleria`
   app.py                # coordenação, histórico e inatividade
@@ -267,6 +269,59 @@ O ambiente virtual existente do projeto também funciona:
 source .venv/bin/activate
 python main.py
 ```
+
+### Instalação automática (PC novo)
+
+O `instalar.sh` monta o ambiente inteiro: pacotes do sistema, ambiente Python
+(com `uv` quando disponível, ou `venv`), compilação do `llama.cpp`, download do
+modelo GGUF, voz do Piper e o comando `soleria`.
+
+```bash
+git clone https://github.com/HubertRamos/Soleria.Heliminas.git ~/.soleria
+cd ~/.soleria
+./instalar.sh
+```
+
+Ele detecta Arch/CachyOS (`pacman`), Debian/Ubuntu (`apt`) e Fedora (`dnf`), e
+pode ser executado várias vezes: o que já existe é reaproveitado. Opções úteis:
+
+| Opção | Efeito |
+| --- | --- |
+| `--dir CAMINHO` | instala em outro diretório |
+| `--sem-modelo` | não baixa o GGUF de 3,8 GB |
+| `--sem-llama` | não compila o `llama.cpp` |
+| `--sem-voz` | não baixa a voz do Piper |
+| `--sem-sistema` | não instala pacotes do sistema |
+| `--sem-testes` | não roda a suíte de testes |
+| `--cuda` / `--cpu` | força o build do `llama.cpp` com/sem CUDA |
+| `--recompilar` | recompila o `llama.cpp` mesmo se já existir |
+| `--backup ARQUIVO` | restaura um backup antes de instalar |
+
+No fim ficam disponíveis o comando `~/.local/bin/soleria` e um atalho
+`Soleria` no menu de aplicativos.
+
+### Backup antes de formatar
+
+O `backup.sh` gera um `.tar.zst` com o código (incluindo `.git` e mudanças
+locais), preferências do menu, estado emocional, relatórios e, por padrão, o
+modelo GGUF e as vozes do Piper:
+
+```bash
+./backup.sh --dest /run/media/hubert/pendrive
+```
+
+O arquivo `.sha256` é gerado junto; confira com
+`sha256sum -c soleria-backup-....sha256`. No PC novo:
+
+```bash
+git clone https://github.com/HubertRamos/Soleria.Heliminas.git ~/.soleria
+~/.soleria/instalar.sh --backup /caminho/soleria-backup-....tar.zst
+```
+
+A restauração nunca sobrescreve arquivos que já existem. Para recuperar só os
+dados, use `--somente-restaurar`; para um backup pequeno, `--sem-modelos`; para
+incluir o build do `llama.cpp`, `--com-llama`. Também é possível extrair o
+arquivo e rodar `./restaurar.sh` de dentro dele.
 
 ## Caminhos padrão
 
