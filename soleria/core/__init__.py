@@ -1,0 +1,1 @@
+"""Lógica central da Soleria."""
